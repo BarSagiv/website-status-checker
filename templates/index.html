@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>Website Status Checker</title>
+</head>
+<body>
+    <h1>Website Status Checker</h1>
+    <form method="post">
+        <select name="site" required>
+            <option value="" disabled {% if not selected_site %}selected{% endif %}>Select a site</option>
+            {% for site in sites %}
+                <option value="{{ site }}" {% if site == selected_site %}selected{% endif %}>{{ site }}</option>
+            {% endfor %}
+        </select>
+        <button type="submit">Check</button>
+    </form>
+
+    {% if status_message %}
+        <h2>{{ status_message }}</h2>
+    {% endif %}
+
+    {% if results %}
+        <h3>Results for {{ selected_site }}:</h3>
+        <pre>
+{% for key, output in results.items() %}
+=== {{ key }} ===
+{{ output }}
+
+{% endfor %}
+        </pre>
+    {% endif %}
+</body>
+</html>
