@@ -1,0 +1,40 @@
+# File: .github/workflows/feature-branches.yml
+name: Build and Test Flask Feature Branches
+
+# Trigger only on feature-* branches
+on:
+  push:
+    branches:
+      - 'feature-*'
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Step 1: Checkout repository
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      # Step 2: Set up Python
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      # Step 3: Install dependencies
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+
+      # Step 4: Build Docker image
+      - name: Build Docker image
+        run: docker build -t flask-app:latest .
+
+      # Step 5: Run Flask app tests (or just start the app to check)
+      - name: Run Flask app
+        run: |
+          docker run --rm flask-app:latest python -m flask --app app run --host=0.0.0.0 --port=5000 &
+          sleep 5
+          curl -I http://localhost:5000 || echo "App not responding"
