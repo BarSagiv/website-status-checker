@@ -1,0 +1,26 @@
+# File: .github/workflows/feature-branches.yml
+name: Build and Test Feature Branches
+
+# Trigger this workflow on pushes to branches starting with "feature-"
+on:
+  push:
+    branches:
+      - 'feature-*'
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest  # Use an Ubuntu runner
+
+    steps:
+      # Step 1: Checkout the repository code
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      # Step 2: Build the Docker image locally
+      - name: Build Docker image
+        run: docker build -t my-app:latest .
+
+      # Step 3: Run tests inside the Docker image
+      # Replace 'pytest' with your actual test command if different
+      - name: Run tests
+        run: docker run --rm my-app:latest pytest
